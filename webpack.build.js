@@ -27,12 +27,25 @@ const buildWebpackConfig = options => {
 		loaders: ['babel']
 	});
 	config.module.loaders.push({
+		test: /\.jade$/,
+		loader: 'jade-loader'
+	});
+	config.module.loaders.push({
 		test: /\.css$/,
 		loader: WebpackExtractTextPlugin.extract('css?sourceMap')
 	});
 
 	// webpack plugins
 	config.plugins = [];
+	config.plugins.push(new HtmlWebpackPlugin({
+		filename: 'application.html',
+		chunks: ['application'],
+		inject: true,
+		minify: false,
+		hash: false,
+		title: 'fun-box.ru exam',
+		template: path.join(__dirname, './application/view', 'view.jade')
+	}));
 	config.plugins.push(new WebpackExtractTextPlugin('styles.css', {
 		allChunks: false
 	}));
