@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "livereloader": "node livereload-server.js",
+    "watch": "node --harmony server.livereload.js",
     "build": "node ./node_modules/webpack/bin/webpack --config webpack.config.babel.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -19,7 +19,9 @@
     "html-webpack-plugin": "2.15.0",
     "jade": "1.11.0",
     "jade-loader": "0.8.0",
-    "webpack": "1.12.14"
+    "opener": "1.4.1",
+    "webpack": "1.12.14",
+    "webpack-dev-server": "1.14.1"
   },
   "dependencies": {
     "angular": "1.5.3",

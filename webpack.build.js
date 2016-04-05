@@ -38,7 +38,7 @@ const buildWebpackConfig = options => {
 	// webpack plugins
 	config.plugins = [];
 	config.plugins.push(new HtmlWebpackPlugin({
-		filename: 'application.html',
+		filename: 'index.html',
 		chunks: ['application'],
 		inject: true,
 		minify: false,
