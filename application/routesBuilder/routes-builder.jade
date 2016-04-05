@@ -1,0 +1,4 @@
+.routes-map
+	form.routes__form(novalidate="", ng-submit="RoutesBuilder.appendRoute()")
+		input(type="text", required="required", placeholder="Новая точка маршрута", ng-model="RoutesBuilder.routes.append")
+	| {{RoutesBuilder.routes}}
