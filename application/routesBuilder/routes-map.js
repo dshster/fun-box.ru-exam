@@ -1,23 +1,25 @@
-routesMap.$inject = [];
+routesMap.$inject = ['routesBuilderService'];
 
-export default function routesMap() {
+export default function routesMap(routesBuilderService) {
 	const directive = {
 		scope: false,
-		replace: true,
+		controller: RoutesMapController,
+		controllerAs: 'RoutesMap',
+		bindToController: {
+			routesList: '='
+		},
 		link: routesMapLink
 	};
 
-	function ymapsInit(id) {
-		const map = new ymaps.Map(id, {
-			center: [55.76, 37.64],
-			zoom: 7
-		});
+	RoutesMapController.$inject = [];
+
+	function RoutesMapController() {
+		const RoutesMap = this;
+
 	}
 
 	function routesMapLink(scope, element, attributes) {
-		ymaps.ready(function() {
-			ymapsInit(attributes.id);
-		});
+		routesBuilderService.mapReady(attributes.id);
 	}
 
 	return directive;
