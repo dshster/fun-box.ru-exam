@@ -2,6 +2,8 @@ routesBuilderService.$inject = ['$q'];
 export default function routesBuilderService($q) {
 	const routesBuilderService = {};
 	let mapContainer;
+	let waypointsCollection;
+	let routeLineCollection;
 
 	routesBuilderService.mapReady = id => {
 		ymaps.ready(() => {
@@ -12,22 +14,57 @@ export default function routesBuilderService($q) {
 	routesBuilderService.mapInitialize = id => {
 		routesBuilderService.setMapContainer(new ymaps.Map(id, {
 			center: [55.76, 37.64],
+			controls: ['zoomControl'],
 			zoom: 7
+		}));
+
+		routesBuilderService.setWaypointsCollection(new ymaps.GeoObjectCollection({}, {
+			preset: 'islands#redIcon'
+		}));
+
+		routesBuilderService.setRouteLineCollection(new ymaps.GeoObjectCollection({}, {
+			strokeColor: '#000000',
+			strokeWidth: 3
+		}));
+
+		mapContainer.geoObjects
+			.add(waypointsCollection)
+			.add(routeLineCollection);
+	};
+
+	routesBuilderService.drawRouteLine = () => {
+		const coordsList = [];
+		// refresh route line
+		// https://tech.yandex.ru/maps/doc/jsapi/2.1/ref/reference/Polyline-docpage/
+		// https://tech.yandex.ru/maps/jsbox/2.1/object_manager_spatial
+
+		waypointsCollection.each(item => {
+			coordsList.push(item.geometry.getCoordinates());
+		});
+
+		routeLineCollection.removeAll();
+		routeLineCollection.add(new ymaps.Polyline(coordsList, {
+			hintContent: 'Маршрут'
 		}));
 	};
 
 	routesBuilderService.getMapCenter = () => mapContainer.getCenter();
 
 	routesBuilderService.waypointBalloonEvents = (waypoint, properties) => {
+		waypoint.events.add('dragend', event => {
+			routesBuilderService.drawRouteLine();
+		});
+
 		waypoint.events.add('balloonopen', event => {
 			const coords = waypoint.geometry.getCoordinates();
-			let balloonContent;
 
-			waypoint.properties.set('balloonContent', 'Идет загрузка данных...');
+			let balloonContent = properties.waypointName;
+
+			waypoint.properties.set('balloonContent', 'Идёт загрузка данных...');
 			routesBuilderService.getGeocode(coords).then(address => {
-				balloonContent = `${properties.waypointName}<br>Адрес: <strong>${address}</strong>`;
+				balloonContent = `${balloonContent}<br>Адрес: <strong>${address}</strong>`;
 			}, error => {
-				balloonContent = `${properties.waypointName}<br>Не удалось получить адрес.`;
+				balloonContent = `${balloonContent}<br>Не удалось получить адрес.`;
 			}).finally(() => {
 				waypoint.properties.set('balloonContent', balloonContent);
 			});
@@ -46,11 +83,18 @@ export default function routesBuilderService($q) {
 		mapContainer = map;
 	};
 
+	routesBuilderService.setWaypointsCollection = collection => {
+		waypointsCollection = collection;
+	};
+
+	routesBuilderService.setRouteLineCollection = collection => {
+		routeLineCollection = collection;
+	};
+
 	routesBuilderService.appendMapPlaceholder = name => {
 		const waypoint = new ymaps.Placemark(routesBuilderService.getMapCenter(), {
 			hintContent: name
 		}, {
-			preset: 'islands#icon',
 			openEmptyBalloon: true,
 			draggable: true
 		});
@@ -59,7 +103,8 @@ export default function routesBuilderService($q) {
 			waypointName: name
 		});
 
-		mapContainer.geoObjects.add(waypoint);
+		waypointsCollection.add(waypoint);
+
 		return waypoint;
 	};
 

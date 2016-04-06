@@ -3,3 +3,6 @@
 		input(type="text", required="required", placeholder="Новая точка маршрута", ng-model="RoutesBuilder.routes.name")
 
 	#routes_map.routes__map(routes-map="", routes-list="RoutesBuilder.routes.list")
+	ul.routes__list
+		li.routes__item(ng-repeat="waypoint in RoutesBuilder.routes.list")
+			| {{waypoint.name}}
