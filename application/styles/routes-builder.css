@@ -1,3 +1,7 @@
+.routes-builder {
+	width: 500px;
+}
+
 .routes__map {
 	position: relative;
 	display: block;
@@ -5,5 +9,17 @@
 	height: 500px;
 }
 
-.routes-map {
+.routes__form {
+}
+
+.routes__list {
+}
+
+.routes__item {
+}
+
+.routes__item-remove {
+	float: right;
+	cursor: pointer;
+	user-select: none;
 }

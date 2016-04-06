@@ -91,7 +91,7 @@ export default function routesBuilderService($q) {
 		routeLineCollection = collection;
 	};
 
-	routesBuilderService.appendMapPlaceholder = name => {
+	routesBuilderService.appendMapWaypoint = name => {
 		const waypoint = new ymaps.Placemark(routesBuilderService.getMapCenter(), {
 			hintContent: name
 		}, {
@@ -106,6 +106,10 @@ export default function routesBuilderService($q) {
 		waypointsCollection.add(waypoint);
 
 		return waypoint;
+	};
+
+	routesBuilderService.removeWaypoint = waypoint => {
+		return waypoint.setParent(null);
 	};
 
 	return routesBuilderService;
