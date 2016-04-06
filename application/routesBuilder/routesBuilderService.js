@@ -34,18 +34,22 @@ export default function routesBuilderService($q) {
 
 	routesBuilderService.drawRouteLine = () => {
 		const coordsList = [];
-		// refresh route line
-		// https://tech.yandex.ru/maps/doc/jsapi/2.1/ref/reference/Polyline-docpage/
-		// https://tech.yandex.ru/maps/jsbox/2.1/object_manager_spatial
+		let routeLine;
 
 		waypointsCollection.each(item => {
 			coordsList.push(item.geometry.getCoordinates());
 		});
 
-		routeLineCollection.removeAll();
-		routeLineCollection.add(new ymaps.Polyline(coordsList, {
-			hintContent: 'Маршрут'
-		}));
+		if (0 === routeLineCollection.getLength()) {
+			routeLine = new ymaps.Polyline([], {
+				hintContent: 'Маршрут'
+			});
+			routeLineCollection.add(routeLine);
+		} else {
+			routeLine = routeLineCollection.get(0);
+		}
+
+		routeLine.geometry.setCoordinates(coordsList);
 	};
 
 	routesBuilderService.getMapCenter = () => mapContainer.getCenter();
