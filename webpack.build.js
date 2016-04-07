@@ -1,20 +1,25 @@
-import path from 'path';
-import WebpackExtractTextPlugin from 'extract-text-webpack-plugin';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
+var path = require('path');
+var WebpackExtractTextPlugin = require('extract-text-webpack-plugin');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const buildWebpackConfig = options => {
+module.exports = function buildWebpackConfig(options) {
+	const TEST = 'test' === options.process;
+	const BUILD = 'build' === options.process;
+
 	const config = {
-		context: path.join(__dirname, './application'),
-		entry: {
-			application: [
-				'./bootstrap.application'
-			]
-		},
-		output: {
-			path: path.join(__dirname, './build'),
-			filename: '[name].js'
-		}
+		context: path.join(__dirname, './application')
 	};
+
+	config.entry = BUILD ? {
+		application: [
+			'./bootstrap.application'
+		]
+	} : {};
+
+	config.output = BUILD ? {
+		path: path.join(__dirname, './build'),
+		filename: '[name].js'
+	} : {};
 
 	config.devtool = 'source-map';
 
@@ -52,5 +57,3 @@ const buildWebpackConfig = options => {
 
 	return config;
 };
-
-export default buildWebpackConfig;
