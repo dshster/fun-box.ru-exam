@@ -14,7 +14,7 @@ function RoutesBuilderController(routesBuilderService) {
 	RoutesBuilder.routes.list = [];
 
 	RoutesBuilder.removeWaypoint = (waypoint, index) => {
-		if (routesBuilderService.removeWaypoint(waypoint.object)) {
+		if (routesBuilderService.removeWaypoint(waypoint.index)) {
 			RoutesBuilder.routes.list.splice(index, 1);
 			routesBuilderService.drawRouteLine();
 		}
@@ -24,7 +24,7 @@ function RoutesBuilderController(routesBuilderService) {
 		if (RoutesBuilder.routes.name) {
 			RoutesBuilder.routes.list.push({
 				name: RoutesBuilder.routes.name,
-				object: routesBuilderService.appendMapWaypoint(RoutesBuilder.routes.name)
+				index: routesBuilderService.appendMapWaypoint(RoutesBuilder.routes.name)
 			});
 
 			if (1 < RoutesBuilder.routes.list.length) {
@@ -33,6 +33,14 @@ function RoutesBuilderController(routesBuilderService) {
 
 			delete RoutesBuilder.routes.name;
 		}
+	};
+
+	RoutesBuilder.sortWaypoint = index => {
+		RoutesBuilder.routes.list.splice(index, 1);
+	};
+
+	RoutesBuilder.handlerSortEnd = () => {
+		routesBuilderService.reorderWaypoints(RoutesBuilder.routes.list);
 	};
 }
 

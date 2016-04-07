@@ -1,9 +1,13 @@
 .routes-builder
 	form.routes__form(novalidate="", ng-submit="RoutesBuilder.appendWaypoint()")
-		input(type="text", required="required", placeholder="Новая точка маршрута", ng-model="RoutesBuilder.routes.name")
+		input(type="text", required="required", ng-maxlength="60", placeholder="Новая точка маршрута", ng-model="RoutesBuilder.routes.name")
 
 	#routes_map.routes__map(routes-map="", routes-list="RoutesBuilder.routes.list")
-	ul.routes__list
-		li.routes__item(ng-repeat="waypoint in RoutesBuilder.routes.list")
+	ul.routes__list(dnd-list="RoutesBuilder.routes.list")
+		li.routes__item(ng-repeat="waypoint in RoutesBuilder.routes.list",
+						dnd-effect-allowed="move"
+						dnd-moved="RoutesBuilder.sortWaypoint($index)"
+						dnd-dragend="RoutesBuilder.handlerSortEnd()"
+						dnd-draggable="waypoint")
 			| {{waypoint.name}}
 			span.routes__item-remove(ng-click="RoutesBuilder.removeWaypoint(waypoint, $index)", ng-bind="'x'")

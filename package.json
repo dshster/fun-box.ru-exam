@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "angular": "1.5.3",
+    "angular-drag-and-drop-lists": "1.4.0",
     "normalize-css": "2.3.1"
   }
 }

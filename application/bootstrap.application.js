@@ -1,6 +1,7 @@
 import 'normalize-css';
 
 import angular from 'angular';
+
 import {compileConfig} from './config';
 import routesBuilder from './routesBuilder';
 

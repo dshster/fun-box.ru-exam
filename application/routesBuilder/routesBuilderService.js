@@ -96,6 +96,8 @@ export default function routesBuilderService($q) {
 	};
 
 	routesBuilderService.appendMapWaypoint = name => {
+		let waypointIndex = 0;
+
 		const waypoint = new ymaps.Placemark(routesBuilderService.getMapCenter(), {
 			hintContent: name
 		}, {
@@ -108,12 +110,40 @@ export default function routesBuilderService($q) {
 		});
 
 		waypointsCollection.add(waypoint);
+		waypointsCollection.each(waypoint => {
+			waypointIndex = waypoint.properties.get('index') ? waypoint.properties.get('index') : waypointIndex;
+		});
 
-		return waypoint;
+		waypoint.properties.set('index', ++waypointIndex);
+
+		return waypointIndex;
 	};
 
-	routesBuilderService.removeWaypoint = waypoint => {
-		return waypoint.setParent(null);
+	routesBuilderService.removeWaypoint = index => {
+		waypointsCollection.each(waypoint => {
+			if (index === waypoint.properties.get('index')) {
+				waypoint.setParent(null);
+			}
+		});
+		return true;
+	};
+
+	routesBuilderService.reorderWaypoints = list => {
+		const waypointsList = waypointsCollection.toArray();
+
+		waypointsCollection.removeAll();
+
+		waypointsList.sort((a, b) => {
+			if (a.properties.get('index') < b.properties.get('index')) return -1;
+			if (a.properties.get('index') > b.properties.get('index')) return 1;
+			return 0;
+		});
+
+		list.forEach(waypoint => {
+			waypointsCollection.add(waypointsList.filter(point => waypoint.index === point.properties.get('index'))[0]);
+		});
+
+		routesBuilderService.drawRouteLine();
 	};
 
 	return routesBuilderService;
