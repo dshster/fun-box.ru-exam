@@ -12,7 +12,7 @@ export default function routesBuilderService($q) {
 	};
 
 	routesBuilderService.mapInitialize = id => {
-		routesBuilderService.setMapContainer(new ymaps.Map(id, {
+		const Map = routesBuilderService.setMapContainer(new ymaps.Map(id, {
 			center: [55.76, 37.64],
 			controls: ['zoomControl'],
 			zoom: 7
@@ -27,32 +27,35 @@ export default function routesBuilderService($q) {
 			strokeWidth: 3
 		}));
 
-		mapContainer.geoObjects
-			.add(waypointsCollection)
-			.add(routeLineCollection);
+		Map.geoObjects
+			.add(routesBuilderService.getWaypointsCollection())
+			.add(routesBuilderService.getRouteLineCollection());
 	};
 
 	routesBuilderService.drawRouteLine = () => {
 		const coordsList = [];
+		const Lines = routesBuilderService.getRouteLineCollection();
+		const Waypoints = routesBuilderService.getWaypointsCollection();
+
 		let routeLine;
 
-		waypointsCollection.each(item => {
+		Waypoints.each(item => {
 			coordsList.push(item.geometry.getCoordinates());
 		});
 
-		if (0 === routeLineCollection.getLength()) {
+		if (0 === Lines.getLength()) {
 			routeLine = new ymaps.Polyline([], {
 				hintContent: 'Маршрут'
 			});
-			routeLineCollection.add(routeLine);
+			Lines.add(routeLine);
 		} else {
-			routeLine = routeLineCollection.get(0);
+			routeLine = Lines.get(0);
 		}
 
 		routeLine.geometry.setCoordinates(coordsList);
 	};
 
-	routesBuilderService.getMapCenter = () => mapContainer.getCenter();
+	routesBuilderService.getMapCenter = () => routesBuilderService.getMapContainer().getCenter();
 
 	routesBuilderService.waypointBalloonEvents = (waypoint, properties) => {
 		waypoint.events.add('dragend', event => {
@@ -85,18 +88,27 @@ export default function routesBuilderService($q) {
 
 	routesBuilderService.setMapContainer = map => {
 		mapContainer = map;
+
+		return mapContainer;
 	};
+
+	routesBuilderService.getMapContainer = () => mapContainer;
 
 	routesBuilderService.setWaypointsCollection = collection => {
 		waypointsCollection = collection;
 	};
 
+	routesBuilderService.getWaypointsCollection = collection => waypointsCollection;
+
 	routesBuilderService.setRouteLineCollection = collection => {
 		routeLineCollection = collection;
 	};
 
+	routesBuilderService.getRouteLineCollection = collection => routeLineCollection;
+
 	routesBuilderService.appendMapWaypoint = name => {
-		let waypointIndex = 0;
+		const Waypoints = routesBuilderService.getWaypointsCollection();
+		let waypointIndex;
 
 		const waypoint = new ymaps.Placemark(routesBuilderService.getMapCenter(), {
 			hintContent: name
@@ -109,9 +121,9 @@ export default function routesBuilderService($q) {
 			waypointName: name
 		});
 
-		waypointsCollection.add(waypoint);
+		Waypoints.add(waypoint);
 
-		let waypointsArray = waypointsCollection.toArray();
+		let waypointsArray = Waypoints.toArray();
 
 		waypointIndex = Math.max(...waypointsArray.map(waypoint => {
 			return waypoint.properties.get('index') ? waypoint.properties.get('index') : 0;
@@ -123,7 +135,9 @@ export default function routesBuilderService($q) {
 	};
 
 	routesBuilderService.removeWaypoint = index => {
-		waypointsCollection.each(waypoint => {
+		const Waypoints = routesBuilderService.getWaypointsCollection();
+
+		Waypoints.each(waypoint => {
 			if (index === waypoint.properties.get('index')) {
 				waypoint.setParent(null);
 			}
@@ -133,9 +147,10 @@ export default function routesBuilderService($q) {
 	};
 
 	routesBuilderService.reorderWaypoints = list => {
-		const waypointsList = waypointsCollection.toArray();
+		const Waypoints = routesBuilderService.getWaypointsCollection();
+		const waypointsList = Waypoints.toArray();
 
-		waypointsCollection.removeAll();
+		Waypoints.removeAll();
 
 		waypointsList.sort((a, b) => {
 			if (a.properties.get('index') < b.properties.get('index')) return -1;
@@ -144,7 +159,7 @@ export default function routesBuilderService($q) {
 		});
 
 		list.forEach(waypoint => {
-			waypointsCollection.add(waypointsList.filter(point => waypoint.index === point.properties.get('index'))[0]);
+			Waypoints.add(waypointsList.filter(point => waypoint.index === point.properties.get('index'))[0]);
 		});
 
 		routesBuilderService.drawRouteLine();

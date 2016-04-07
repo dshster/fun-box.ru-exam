@@ -5,8 +5,10 @@
   "main": "index.js",
   "scripts": {
     "watch": "node --harmony server.livereload.js",
-    "build": "node ./node_modules/webpack/bin/webpack --config webpack.config.babel.js",
-    "test": "node ./node_modules/karma/bin/karma start karma.conf.js --log-level debug --single-run"
+    "build": "node ./node_modules/webpack/bin/webpack --config webpack.config.js",
+    "test": "node ./node_modules/karma/bin/karma start karma.conf.js --log-level debug --single-run",
+    "e2e": "node ./node_modules/protractor/bin/protractor protractor.conf.js",
+    "webdriver": "webdriver-manager update --standalone && webdriver-manager start"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +30,7 @@
     "karma-jasmine": "0.3.8",
     "karma-webpack": "1.7.0",
     "opener": "1.4.1",
+    "protractor": "3.2.2",
     "webpack": "1.12.14",
     "webpack-dev-server": "1.14.1"
   },
