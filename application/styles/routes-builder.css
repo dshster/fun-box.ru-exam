@@ -1,25 +1,76 @@
 .routes-builder {
-	width: 500px;
+	padding: 25px;
+}
+
+.routes__form {
+	float: left;
+	width: 350px;
+	margin: 0 -100% 0 0;
+}
+
+.routes__name {
+	width: 100%;
+	padding: 4px 6px;
+	font-size: 14px;
+	font-family: 'Open Sans', Arial, sans-serif;
+	box-sizing: border-box;
+	border: 1px solid #5e5e5e;
+}
+
+.routes__name.ng-dirty.ng-invalid {
+	outline: 3px solid red;
 }
 
 .routes__map {
 	position: relative;
 	display: block;
-	width: 500px;
+	margin-left: 380px;
 	height: 500px;
-}
-
-.routes__form {
+	border: 1px solid #5e5e5e;
 }
 
 .routes__list {
+	margin: 25px 0;
+	padding: 0;
+	height: 448px;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	list-style-type: none;
 }
 
 .routes__item {
+	display: block;
+	padding: 2px 35px 2px 5px;
+	font-size: 14px;
+	font-family: 'Open Sans', Arial, sans-serif;
+	line-height: 22px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	cursor: pointer;
+}
+
+.routes__item:hover {
+	background-color: #ffdddd;
+}
+
+.dndPlaceholder {
+	display: block;
+	height: 26px;
+	background-color: #dbdbdb;
 }
 
 .routes__item-remove {
+	position: relative;
 	float: right;
+	width: 25px;
+	margin: 0 -30px 0 -100%;
+	text-align: center;
 	cursor: pointer;
 	user-select: none;
+}
+
+.routes__item-remove:hover {
+	color: #fff;
+	background-color: #ac2925;
 }

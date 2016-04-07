@@ -6,8 +6,8 @@ const routesBuilderComponent = {
 	replace: true
 };
 
-RoutesBuilderController.$inject = ['routesBuilderService'];
-function RoutesBuilderController(routesBuilderService) {
+RoutesBuilderController.$inject = ['$scope', 'routesBuilderService'];
+function RoutesBuilderController($scope, routesBuilderService) {
 	const RoutesBuilder = this;
 
 	RoutesBuilder.routes = {};
@@ -31,6 +31,7 @@ function RoutesBuilderController(routesBuilderService) {
 				routesBuilderService.drawRouteLine();
 			}
 
+			$scope.appendWaypointForm.$setPristine();
 			delete RoutesBuilder.routes.name;
 		}
 	};
