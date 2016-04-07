@@ -110,9 +110,12 @@ export default function routesBuilderService($q) {
 		});
 
 		waypointsCollection.add(waypoint);
-		waypointsCollection.each(waypoint => {
-			waypointIndex = waypoint.properties.get('index') ? waypoint.properties.get('index') : waypointIndex;
-		});
+
+		let waypointsArray = waypointsCollection.toArray();
+
+		waypointIndex = Math.max(...waypointsArray.map(waypoint => {
+			return waypoint.properties.get('index') ? waypoint.properties.get('index') : 0;
+		}));
 
 		waypoint.properties.set('index', ++waypointIndex);
 
@@ -125,7 +128,8 @@ export default function routesBuilderService($q) {
 				waypoint.setParent(null);
 			}
 		});
-		return true;
+
+		return index;
 	};
 
 	routesBuilderService.reorderWaypoints = list => {
