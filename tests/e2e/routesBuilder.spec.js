@@ -8,6 +8,20 @@ describe('Routes builder', function() {
 
 	var ymapsversion = '2-1-38';
 
+	function appendPlacemarks() {
+		appendInput.sendKeys('First waypoint');
+		appendInput.sendKeys(protractor.Key.ENTER);
+
+		appendInput.sendKeys('Second waypoint');
+		appendInput.sendKeys(protractor.Key.ENTER);
+
+		appendInput.sendKeys('Third waypoint');
+		appendInput.sendKeys(protractor.Key.ENTER);
+
+		appendInput.sendKeys('Fourth waypoint');
+		appendInput.sendKeys(protractor.Key.ENTER);
+	}
+
 	beforeEach(function() {
 		browser.get('http://localhost:8080/');
 
@@ -40,32 +54,9 @@ describe('Routes builder', function() {
 		expect(map.element(by.css('ymaps')).isPresent()).toBeTruthy();
 	});
 
-	it('placemark to be exist', function() {
-		// Тут по-хорошему нужно подключаться у window.ymaps
-		// и брать данные из API карт
-		var placemarks;
-		var placemarkclass = '.ymaps-' + ymapsversion + '-placemark-overlay';
-
-		appendInput.sendKeys('First waypoint');
-		appendInput.sendKeys(protractor.Key.ENTER);
-
-		placemarks = element.all(by.css('#routes_map ymaps ' + placemarkclass));
-		expect(placemarks.count()).toBe(1);
-	});
-
 	describe('fill route waypoints', function() {
 		beforeEach(function() {
-			appendInput.sendKeys('First waypoint');
-			appendInput.sendKeys(protractor.Key.ENTER);
-
-			appendInput.sendKeys('Second waypoint');
-			appendInput.sendKeys(protractor.Key.ENTER);
-
-			appendInput.sendKeys('Third waypoint');
-			appendInput.sendKeys(protractor.Key.ENTER);
-
-			appendInput.sendKeys('Fourth waypoint');
-			appendInput.sendKeys(protractor.Key.ENTER);
+			appendPlacemarks();
 		});
 
 		it('waypoints submit', function() {
@@ -92,7 +83,7 @@ describe('Routes builder', function() {
 			});
 		});
 
-		it('sort', function() {
+		xit('sort', function() {
 			var target = list.get(3).getWebElement();
 			var dest = list.get(1).getWebElement();
 
@@ -109,5 +100,22 @@ describe('Routes builder', function() {
 				expect(text).toEqual('Third waypoint');
 			});
 		}, 60000);
+	});
+
+	describe('test placemark', function() {
+		var placemarks;
+		var placemarkclass = '.ymaps-' + ymapsversion + '-placemark-overlay';
+
+		// Тут по-хорошему нужно подключаться у window.ymaps
+		// и брать данные из API карт
+
+		beforeEach(function() {
+			appendPlacemarks();
+			placemarks = element.all(by.css('#routes_map ymaps ' + placemarkclass));
+		});
+
+		it('placemarks to be exist', function() {
+			expect(placemarks.count()).toBe(4);
+		});
 	});
 });
