@@ -6,6 +6,8 @@ describe('Routes builder', function() {
 	var list;
 	var map;
 
+	var ymapsversion = '2-1-38';
+
 	beforeEach(function() {
 		browser.get('http://localhost:8080/');
 
@@ -34,6 +36,23 @@ describe('Routes builder', function() {
 		expect(list.count()).toBe(1);
 	});
 
+	it('map to be exist', function() {
+		expect(map.element(by.css('ymaps')).isPresent()).toBeTruthy();
+	});
+
+	it('placemark to be exist', function() {
+		// Тут по-хорошему нужно подключаться у window.ymaps
+		// и брать данные из API карт
+		var placemarks;
+		var placemarkclass = '.ymaps-' + ymapsversion + '-placemark-overlay';
+
+		appendInput.sendKeys('First waypoint');
+		appendInput.sendKeys(protractor.Key.ENTER);
+
+		placemarks = element.all(by.css('#routes_map ymaps ' + placemarkclass));
+		expect(placemarks.count()).toBe(1);
+	});
+
 	describe('fill route waypoints', function() {
 		beforeEach(function() {
 			appendInput.sendKeys('First waypoint');
@@ -44,13 +63,51 @@ describe('Routes builder', function() {
 
 			appendInput.sendKeys('Third waypoint');
 			appendInput.sendKeys(protractor.Key.ENTER);
+
+			appendInput.sendKeys('Fourth waypoint');
+			appendInput.sendKeys(protractor.Key.ENTER);
 		});
 
 		it('waypoints submit', function() {
-			expect(list.count()).toBe(3);
+			expect(list.count()).toBe(4);
 		});
 
-		xit('waypoint remove', function() {
+		it('first waypoint equal name', function() {
+			list.get(0).element(by.binding('waypoint.name')).getText().then(function(text) {
+				expect(text).toEqual('First waypoint');
+			});
 		});
+
+		it('remove second waypoint', function() {
+			list.get(1).element(by.css('.routes__item-remove')).click();
+			expect(list.count()).toBe(3);
+			list.get(1).element(by.binding('waypoint.name')).getText().then(function(text) {
+				expect(text).toEqual('Third waypoint');
+			});
+		});
+
+		it('waypoints draggable attribute to be true', function() {
+			list.get(0).getAttribute('draggable').then(function(attr) {
+				expect(attr).toBeTruthy();
+			});
+		});
+
+		it('sort', function() {
+			var target = list.get(3).getWebElement();
+			var dest = list.get(1).getWebElement();
+
+			// Сортировка не работает, я не разобрался.
+
+			browser.actions()
+				.mouseMove(target, {x: 20, y: 5})
+				.mouseDown()
+				.mouseMove(dest, {x: 20, y: 5})
+				.mouseUp()
+				.perform();
+
+			list.get(0).element(by.binding('waypoint.name')).getText().then(function(text) {
+				expect(text).toEqual('Third waypoint');
+			});
+		}, 60000);
 	});
 });

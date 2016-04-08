@@ -9,6 +9,6 @@
 			dnd-dragend="RoutesBuilder.handlerSortEnd()"
 			dnd-draggable="waypoint")
 				span.routes__item-remove(ng-click="RoutesBuilder.removeWaypoint(waypoint, $index)", ng-bind="'x'")
-				| {{waypoint.name}}
+				span.routes__title(ng-bind="waypoint.name")
 
 	#routes_map.routes__map(routes-map="", routes-list="RoutesBuilder.routes.list")

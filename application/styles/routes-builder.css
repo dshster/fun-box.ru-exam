@@ -54,6 +54,10 @@
 	background-color: #ffdddd;
 }
 
+.routes__item:active {
+	background-color: #e9dc51;
+}
+
 .dndPlaceholder {
 	display: block;
 	height: 26px;

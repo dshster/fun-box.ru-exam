@@ -1,10 +1,12 @@
 var path = require('path');
+var Webpack = require('webpack');
 var WebpackExtractTextPlugin = require('extract-text-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = function buildWebpackConfig(options) {
 	const TEST = 'test' === options.process;
 	const BUILD = 'build' === options.process;
+	const PRODUCTION = !!options.environment;
 
 	const config = {
 		context: path.join(__dirname, './application')
@@ -21,7 +23,7 @@ module.exports = function buildWebpackConfig(options) {
 		filename: '[name].js'
 	} : {};
 
-	config.devtool = 'source-map';
+	config.devtool = PRODUCTION ? false : 'source-map';
 
 	// webpack modules
 	config.module = {};
@@ -54,6 +56,14 @@ module.exports = function buildWebpackConfig(options) {
 	config.plugins.push(new WebpackExtractTextPlugin('styles.css', {
 		allChunks: false
 	}));
+
+	if (PRODUCTION) {
+		config.plugins.push(new Webpack.optimize.UglifyJsPlugin({
+			compress: {
+				warnings: false
+			}
+		}));
+	}
 
 	return config;
 };

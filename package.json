@@ -4,11 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "watch": "node --harmony server.livereload.js",
-    "build": "node ./node_modules/webpack/bin/webpack --config webpack.config.js",
-    "test": "node ./node_modules/karma/bin/karma start karma.conf.js --log-level debug --single-run",
-    "e2e": "node ./node_modules/protractor/bin/protractor protractor.conf.js",
-    "webdriver": "webdriver-manager update --standalone && webdriver-manager start"
+    "watch": "set NODE_ENV=debug && node --harmony server.livereload.js",
+    "build": "set NODE_ENV=debug && node ./node_modules/webpack/bin/webpack --config webpack.config.js",
+    "production": "set NODE_ENV=production && node ./node_modules/webpack/bin/webpack --config webpack.config.js",
+    "test": "set NODE_ENV=debug && node ./node_modules/karma/bin/karma start karma.conf.js --log-level debug --single-run",
+    "e2e": "set NODE_ENV=debug && node ./node_modules/protractor/bin/protractor protractor.conf.js",
+    "webdriver": "webdriver-manager update --standalone"
   },
   "keywords": [],
   "author": "",
